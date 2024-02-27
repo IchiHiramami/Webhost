@@ -1,4 +1,4 @@
-// Import necessary modules
+
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
 import Map from 'ol/Map.js';
@@ -7,6 +7,7 @@ import View from 'ol/View.js';
 import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
 import {OSM, Vector as VectorSource} from 'ol/source.js';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
+
 
 const view = new View({
   center: [0, 0],
@@ -24,6 +25,7 @@ const map = new Map({
 });
 
 const geolocation = new Geolocation({
+  // enableHighAccuracy must be set to true to have the heading value.
   trackingOptions: {
     enableHighAccuracy: true,
   },
@@ -38,42 +40,13 @@ el('track').addEventListener('change', function () {
   geolocation.setTracking(this.checked);
 });
 
-let accuracy, altitude, altitudeAccuracy, heading, speed;
-
+// update the HTML page when the position changes.
 geolocation.on('change', function () {
-  accuracy = geolocation.getAccuracy();
-  altitude = geolocation.getAltitude();
-  altitudeAccuracy = geolocation.getAltitudeAccuracy();
-  heading = geolocation.getHeading();
-  speed = geolocation.getSpeed();
-
-  el('accuracy').innerText = accuracy + ' [m]';
-  el('altitude').innerText = altitude + ' [m]';
-  el('altitudeAccuracy').innerText = altitudeAccuracy + ' [m]';
-  el('heading').innerText = heading + ' [rad]';
-  el('speed').innerText = speed + ' [m/s]';
-
-  // Prepare the data to be sent
-  const data = {
-    accuracy: accuracy,
-    altitude: altitude,
-    altitudeAccuracy: altitudeAccuracy,
-    heading: heading,
-    speed: speed,
-    timestamp: new Date()
-  };
-
-  // Send the data to the server using Fetch API
-  fetch('http://localhost:3000/uploadData', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch((error) => console.error('Error:', error));
+  el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+  el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+  el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+  el('heading').innerText = geolocation.getHeading() + ' [rad]';
+  el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
 });
 
 // handle geolocation error.
@@ -101,11 +74,24 @@ positionFeature.setStyle(
         width: 2,
       }),
     }),
-  })
+  }),
 );
+
+let latitude = null;
+let longitude = null;
 
 geolocation.on('change:position', function () {
   const coordinates = geolocation.getPosition();
+  if (coordinates) {
+    latitude = coordinates[0];
+    longitude = coordinates[1];
+    const locationData = {
+      latitude: latitude,
+      longitude: longitude
+    };
+    const locationDataJson = JSON.stringify(locationData);
+    console.log(locationDataJson);
+  }
   positionFeature.setGeometry(coordinates ? new Point(coordinates) : null);
 });
 

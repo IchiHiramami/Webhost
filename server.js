@@ -12,11 +12,12 @@ app.use(bodyParser.json());
 const url = process.env.MONGODB_URL;
 
 // Database Name
-const dbName = 'RT-location';
+const dbName = 'Geolocation';
 
 // Create a new MongoClient
 const client = new MongoClient(url);
 
+const PORT = process.env.PORT_NUMCONFIG || 3000;
 let collection;
 
 // Use connect method to connect to the server
@@ -79,6 +80,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+server.listen(process.env.PORT_NUMCONFIG, () => {
+  console.log('Server is running on port' + PORT);
 });

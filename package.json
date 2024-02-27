@@ -1,17 +1,21 @@
 {
   "name": "webhost",
+  "main": "connection.mjs",
+  "type": "module",
   "dependencies": {
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.2",
     "express": "^4.18.2",
-    "mongoose": "^8.1.1",
-    "ol": "8.2.0"
+    "mongoose": "^8.2.0",
+    "node-fetch": "^3.3.2",
+    "ol": "8.2.0",
+    "socket.io": "^4.7.4"
   },
   "devDependencies": {
     "vite": "^3.2.3"
   },
   "scripts": {
-    "start": "vite",
+    "start": "npx nodemon",
     "build": "vite build"
   }
 }
