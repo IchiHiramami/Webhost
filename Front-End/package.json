@@ -1,6 +1,6 @@
 {
   "name": "webhost",
-  "main": "connection.mjs",
+  "main": "main.js",
   "type": "module",
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -9,13 +9,15 @@
     "mongoose": "^8.2.0",
     "node-fetch": "^3.3.2",
     "ol": "8.2.0",
+    "path": "^0.12.7",
+    "proper-lockfile": "^4.1.2",
     "socket.io": "^4.7.4"
   },
   "devDependencies": {
     "vite": "^3.2.3"
   },
   "scripts": {
-    "start": "npx nodemon",
+    "start": "vite",
     "build": "vite build"
   }
 }

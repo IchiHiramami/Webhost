@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const locationSchema = new mongoose.Schema({
+locationSchema = new mongoose.Schema({
     latitude: {
         type: Number,
         require: true
@@ -11,4 +11,4 @@ const locationSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model('location', locationSchema);
+module.exports = mongoose.model('location', locationSchema);
