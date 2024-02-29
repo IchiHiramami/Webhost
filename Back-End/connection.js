@@ -4,6 +4,7 @@ const Location = require('./model/location.js');
 const dotenv = require('dotenv');
 const fs = require('fs').promises;
 const cors = require('cors');
+const proj4 = require('proj4');
 
 
 dotenv.config();
@@ -16,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const url = process.env.CONNECTION;
-const port = process.env.PORT || 3000;
+const port = 3005;
 
 app.post('/locations', async (req, res) => {
   const locationData = req.body;  
@@ -40,12 +41,61 @@ app.post('/locations', async (req, res) => {
   }
 });
 
-let locationData = null;
+app.get('/', (req, res) => {
+  //landing page
+      res.send('Welcome');
+  });
+  
+  //list out all location data without filters
+  app.get('/locations/results', async (req, res) => {
+  
+      try{
+          const result = await Location.find();
+          res.send ({"Location": result});
+      } catch(e){
+          res.status(500).json({error: e.message});
+      }
+  });
+  
+  //reading location data with specific id
+  app.get('/locations/:id', async (req, res) => {
+      console.log('Location Read');
+      try {
+          const {id: locationId} = req.params;
+          console.log(locationId);
+          const location = await Location.findById(locationId);
+          console.log(location);
+          if(!location){
+              res.status(404).json({error: 'User not Found'});
+          } else {
+              res.json({location});
+          }
+      } catch(e){
+          res.status(500).json({error: e.message});
+      }
+  });
+  
+  const firstProjection = 'EPSG:3857'; // Projection of incoming data
+  const secondProjection = 'EPSG:4326'; // Projection you want to convert to
 
-app.post('/locations/test', async(req, res) => {
-  locationData = req.body; // Assign the received data to the variable
-  console.log(locationData); // Log the data to the console
-  res.sendStatus(200); // Send a success status back to the client
+
+app.put('/locations/:id', async (req, res) => {
+    try{
+        const locationId = req.params.id;
+        let data = req.body;
+
+        // Convert the coordinates
+        let [x, y] = proj4(firstProjection, secondProjection, [data.longitude, data.latitude]);
+        data.longitude = x;
+        data.latitude = y   ;
+        
+        const result = await Location.findOneAndReplace({_id: locationId}, data, {new: true}); //take your data, change it in the database, and return to you the new data
+        console.log('Location Data Update');
+        res.json({location: result});
+    } catch(e) {
+        console.log(e.message)
+        res.status(500).json({error: e.message});
+    }
 });
 
 const start = async() => {
@@ -54,7 +104,6 @@ const start = async() => {
 
       app.listen(port, () => {
           console.log('App listening on port' + port);
-          console.log(url);
       });
   } catch(error) {
       console.log(error.message);

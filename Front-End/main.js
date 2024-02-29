@@ -101,8 +101,8 @@ function updatePosition() {
       longitude: longitude
     };
     // Send the location data to the server
-    fetch('http://localhost:3005/locations', {
-      method: 'POST',
+    fetch('http://localhost:3005/locations/65ded1920a2a2e2fd47bad30', {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
