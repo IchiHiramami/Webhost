@@ -57,10 +57,10 @@ app.get('/', (req, res) => {
   
   //reading location data with specific id
   app.get('/locations/:id', async (req, res) => {
-      console.log('Location Read');
       try {
           const {id: locationId} = req.params;
           const location = await Location.findById(locationId);
+          console.log('Location Read');
           if(!location){
               res.status(404).json({error: 'User not Found'});
           } else {
@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
         const locationId = req.params.id;
         let data = req.body;
         const result = await Location.findOneAndReplace({_id: locationId}, data, {new: true}); //take your data, change it in the database, and return to you the new data
-        console.log(req.body);
+        console.log('Data Updated');
         res.json({location: result});
     } catch(e) {
         console.log(e.message)
