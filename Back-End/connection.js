@@ -60,9 +60,7 @@ app.get('/', (req, res) => {
       console.log('Location Read');
       try {
           const {id: locationId} = req.params;
-          console.log(locationId);
           const location = await Location.findById(locationId);
-          console.log(location);
           if(!location){
               res.status(404).json({error: 'User not Found'});
           } else {
