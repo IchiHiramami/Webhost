@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const Location = require('./model/location.js'); 
 const dotenv = require('dotenv');
-const fs = require('fs').promises;
 const cors = require('cors');
-const proj4 = require('proj4');
 
 
 dotenv.config();
@@ -74,23 +72,13 @@ app.get('/', (req, res) => {
           res.status(500).json({error: e.message});
       }
   });
-  
-  const firstProjection = 'EPSG:3857'; // Projection of incoming data
-  const secondProjection = 'EPSG:4326'; // Projection you want to convert to
 
-
-app.put('/locations/:id', async (req, res) => {
+  app.put('/locations/:id', async (req, res) => {
     try{
         const locationId = req.params.id;
         let data = req.body;
-
-        // Convert the coordinates
-        let [x, y] = proj4(firstProjection, secondProjection, [data.longitude, data.latitude]);
-        data.longitude = x;
-        data.latitude = y   ;
-        
         const result = await Location.findOneAndReplace({_id: locationId}, data, {new: true}); //take your data, change it in the database, and return to you the new data
-        console.log('Location Data Update');
+        console.log(req.body);
         res.json({location: result});
     } catch(e) {
         console.log(e.message)

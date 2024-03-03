@@ -100,6 +100,7 @@ function updatePosition() {
       latitude: latitude,
       longitude: longitude
     };
+    console.log(locationData);
     // Send the location data to the server
     fetch('http://localhost:3005/locations/65ded1920a2a2e2fd47bad30', {
       method: 'PUT',
