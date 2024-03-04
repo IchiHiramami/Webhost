@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const url = process.env.MONGODB_URL || "azure-todo-app";
+const url = process.env.MONGODB_URL || "mongodb+srv://Pre-Production:thisisapassword@locationtracking.z7bwiar.mongodb.net/location?retryWrites=true&w=majority&appName=LocationTracking";
 const port = 3005;
 
 app.post('/locations', async (req, res) => {
