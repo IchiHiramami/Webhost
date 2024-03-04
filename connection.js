@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const url = process.env.CONNECTION;
+const url = process.env.MONGODB_URL;
 const port = 3005;
 
 app.post('/locations', async (req, res) => {
