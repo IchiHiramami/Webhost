@@ -14,7 +14,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const url = process.env.MONGODB_URL;
 const port = 3005;
 
 app.post('/locations', async (req, res) => {
@@ -86,7 +85,7 @@ app.get('/', (req, res) => {
 
 const start = async() => {
   try{
-      await mongoose.connect(url);
+      await mongoose.connect(process.env.MONGODB_URL);
 
       app.listen(port, () => {
           console.log('App listening on port' + port);
