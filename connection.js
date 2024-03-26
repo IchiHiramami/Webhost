@@ -14,68 +14,69 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const port = 3005;
+const url = process.env.MONGODB_URL || 'mongodb+srv://Tester:thetestergetstested@locationtracking.z7bwiar.mongodb.net/location?retryWrites=true&w=majority&appName=LocationTracking';
+const port = 3005;  
 
 app.post('/locations', async (req, res) => {
-  const locationData = req.body;  
-  const initLatitude = locationData.latitude;
-  const initLongitude = locationData.longitude;
-  console.log("latitude:", initLatitude, "Longitude", initLongitude);
+    const locationData = req.body;  
+    const initLatitude = locationData.latitude;
+    const initLongitude = locationData.longitude;
+    console.log("latitude:", initLatitude, "Longitude", initLongitude);
 
-  const newLocation = new Location({
+const newLocation = new Location({
     latitude: initLatitude || 0,
     longitude: initLongitude || 0
-  });
-  try {
+});
+try {
     console.log('phase1 88% complete')
     await newLocation.save();
     console.log({newLocation});
     res.status(201).json({newLocation});
-  } catch (e) {
+} catch (e) {
     console.error(e); // Log the error
     res.status(400).json({ error: 'Failed to save location data.' });
     console.log(e.message);
-  }
+}
 });
 
 app.get('/', (req, res) => {
-  //landing page
-      res.send('Welcome');
-  });
-  
-  //list out all location data without filters
-  app.get('/locations/results', async (req, res) => {
-  
-      try{
-          const result = await Location.find();
-          res.send ({"Location": result});
-      } catch(e){
-          res.status(500).json({error: e.message});
-      }
-  });
-  
-  //reading location data with specific id
-  app.get('/locations/:id', async (req, res) => {
-      try {
-          const {id: locationId} = req.params;
-          const location = await Location.findById(locationId);
-          console.log('Location Read');
-          if(!location){
-              res.status(404).json({error: 'User not Found'});
-          } else {
-              res.json({location});
-          }
-      } catch(e){
-          res.status(500).json({error: e.message});
-      }
-  });
+//landing page
+    res.send('Welcome');
+});
 
-  app.put('/locations/:id', async (req, res) => {
+//list out all location data without filters
+app.get('/locations/results', async (req, res) => {
+
+    try{
+        const result = await Location.find();
+        res.send ({"Location": result});
+    } catch(e){
+        res.status(500).json({error: e.message});
+    }
+});
+
+//reading location data with specific id
+app.get('/locations/:id', async (req, res) => {
+    try {
+        const {id: locationId} = req.params;
+        const location = await Location.findById(locationId);
+        console.log('Location Read');
+        if(!location){
+            res.status(404).json({error: 'User not Found'});
+        } else {
+            res.json({location});
+        }
+    } catch(e){
+        res.status(500).json({error: e.message});
+    }
+});
+
+app.put('/locations/:id', async (req, res) => {
     try{
         const locationId = req.params.id;
         let data = req.body;
         const result = await Location.findOneAndReplace({_id: locationId}, data, {new: true}); //take your data, change it in the database, and return to you the new data
-        console.log('Data Updated');
+        console.log({location: result}, 'Data Updated');
         res.json({location: result});
     } catch(e) {
         console.log(e.message)
@@ -84,15 +85,15 @@ app.get('/', (req, res) => {
 });
 
 const start = async() => {
-  try{
-      await mongoose.connect(process.env.MONGODB_URL);
+try{
+    await mongoose.connect(url);
 
-      app.listen(port, () => {
-          console.log('App listening on port' + port);
-      });
-  } catch(error) {
-      console.log(error.message);
-  }
+    app.listen(port, () => {
+        console.log('App listening on port' + port);
+    });
+} catch(error) {
+    console.log(error.message);
+}
 
 };
 
