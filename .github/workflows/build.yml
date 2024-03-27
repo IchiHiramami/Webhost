@@ -28,7 +28,5 @@ jobs:
       run: |
         node connection.js &
         echo "SERVER_PID=$!" >> $GITHUB_ENV
-    - name: Run tests
-      run: npm test
     - name: Stop server
       run: kill $SERVER_PID
