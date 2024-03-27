@@ -4,7 +4,6 @@ const Location = require('./model/location.js');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-
 dotenv.config();
 mongoose.set('strictQuery', false);
 
