@@ -78,6 +78,7 @@ app.put('/locations/:id', async (req, res) => {
         console.log({location: result}, 'Data Updated');
         res.json({location: result});
     } catch(e) {
+        System.Diagnostics.Trace.TraceInformation(e.message)
         console.log(e.message)
         res.status(500).json({error: e.message});
     }
