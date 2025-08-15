@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const url = process.env.MONGODB_URL || 'mongodb+srv://Tester:thetestergetstested@locationtracking.z7bwiar.mongodb.net/location?retryWrites=true&w=majority&appName=LocationTracking';
+const url = process.env.MONGODB_URL;
 const port = process.env.port || 8080;  
 
 app.post('/locations', async (req, res) => {
